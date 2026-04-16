@@ -1,0 +1,37 @@
+# Core RAG framework
+
+langchain
+langchain-community
+langchain-openai
+
+# Embeddings
+
+openai
+sentence-transformers
+
+# Vector database
+
+faiss-cpu
+chromadb
+
+# Document loaders
+
+pypdf
+beautifulsoup4
+requests
+playwright
+
+# Markdown / text processing
+
+markdown
+tiktoken
+
+# API (for serving RAG)
+
+fastapi
+uvicorn
+
+# Utilities
+
+python-dotenv
+pydantic
