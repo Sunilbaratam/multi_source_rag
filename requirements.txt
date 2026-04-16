@@ -1,37 +1,29 @@
-# Core RAG framework
+# Core
+langchain>=0.2.0
+langchain-community>=0.2.0
+langchain-openai>=0.1.0
+langchain-chroma>=0.1.0
+langchain-text-splitters>=0.2.0
 
-langchain
-langchain-community
-langchain-openai
+# Loaders
+pypdf>=4.0.0
+beautifulsoup4>=4.12.0
+requests>=2.31.0
 
-# Embeddings
+#embeddings
+langchain-huggingface
 
-openai
-sentence-transformers
+# Vector store
+chromadb>=0.5.0
 
-# Vector database
+# API (Week 3)
+fastapi>=0.111.0
+uvicorn>=0.30.0
+python-multipart>=0.0.9
+pydantic>=2.7.0
 
-faiss-cpu
-chromadb
+# Eval (Week 4)
+ragas>=0.1.0
 
-# Document loaders
-
-pypdf
-beautifulsoup4
-requests
-playwright
-
-# Markdown / text processing
-
-markdown
-tiktoken
-
-# API (for serving RAG)
-
-fastapi
-uvicorn
-
-# Utilities
-
-python-dotenv
-pydantic
+# Dev
+python-dotenv>=1.0.0
