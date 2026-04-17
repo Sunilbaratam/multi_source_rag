@@ -1,33 +1,15 @@
 """
 embedder.py — Embeds chunks and upserts them into ChromaDB.
 Run this after chunker.py to populate your vector store.
+Embedding model lives in db.py — do not redefine it here.
 """
 
-import os
 from typing import List
 from langchain_core.documents import Document
-from langchain_chroma import Chroma
-from langchain_openai import OpenAIEmbeddings
+import sys, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+from db import get_vectorstore
 
-
-CHROMA_DIR = "./chroma_db"
-COLLECTION  = "multi_source_rag_pipeline"
-
-
-# 1. Install the local embedding package
-# pip install langchain-huggingface
-
-from langchain_huggingface import HuggingFaceEmbeddings
-
-def get_vectorstore() -> Chroma:
-    # This downloads a model to your Mac and runs it locally for FREE
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    
-    return Chroma(
-        collection_name=COLLECTION,
-        embedding_function=embeddings,
-        persist_directory=CHROMA_DIR,
-    )
 
 def embed_and_store(chunks: List[Document]) -> int:
     """
@@ -44,29 +26,29 @@ def embed_and_store(chunks: List[Document]) -> int:
     metas = [c.metadata for c in chunks]
 
     db.add_texts(texts=texts, metadatas=metas, ids=ids)
-    print(f"[EMBED] Stored {len(chunks)} chunks in ChromaDB at '{CHROMA_DIR}'")
+    print(f"[EMBED] Stored {len(chunks)} chunks in ChromaDB at './chroma_db'")
     return len(chunks)
 
 
-def similarity_search(query: str, k: int = 5) -> List[Document]:
+def similarity_search(query: str, k: int = 5):
     """Quick test helper — returns top-k chunks for a query string."""
     db = get_vectorstore()
-    results = db.similarity_search_with_score(query, k=k)
-    return results
+    return db.similarity_search_with_score(query, k=k)
 
 
-# if __name__ == "__main__":
-#     from loaders import load_sources
-#     from chunker import chunk_documents
+if __name__ == "__main__":
+    import sys
+    sys.path.insert(0, "..")
+    from loaders import load_sources
+    from chunker import chunk_documents
 
-#     sources = ["https://en.wikipedia.org/wiki/Retrieval-augmented_generation"]
-#     docs   = load_sources(sources)
-#     chunks = chunk_documents(docs)
-#     embed_and_store(chunks)
+    sources = ["https://en.wikipedia.org/wiki/Retrieval-augmented_generation"]
+    docs   = load_sources(sources)
+    chunks = chunk_documents(docs)
+    embed_and_store(chunks)
 
-#     print("\nTest query: 'what is retrieval augmented generation?'")
-#     hits = similarity_search("what is retrieval augmented generation?", k=3)
-#     print(hits)
-#     for doc, score in hits:
-#         print(f"  Score {score:.3f} | {doc.metadata.get('source_type')} | "
-#               f"{doc.page_content[:120]}...")
+    print("\nTest query: 'what is retrieval augmented generation?'")
+    hits = similarity_search("what is retrieval augmented generation?", k=3)
+    for doc, score in hits:
+        print(f"  Score {score:.3f} | {doc.metadata.get('source_type')} | "
+              f"{doc.page_content[:120]}...")
