@@ -1,0 +1,39 @@
+# docker-compose.yml — RAG Pipeline full stack
+# Week 4, Day 3.
+#
+# Run:  docker compose up
+# Then visit http://localhost:8000
+
+services:
+
+  # FastAPI backend
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # persist ChromaDB data across container restarts
+      - chroma_data:/app/chroma_db
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Ollama runs on the host — this makes host.docker.internal work on Mac/Linux
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  # Streamlit frontend
+  frontend:
+    build: .
+    command: streamlit run frontend/app.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    volumes:
+      - chroma_data:/app/chroma_db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  chroma_data:
