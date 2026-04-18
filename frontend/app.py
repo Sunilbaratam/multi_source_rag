@@ -30,6 +30,31 @@ st.title("Multi-Source RAG Pipeline")
 st.caption("Hybrid BM25 + Semantic retrieval · Cross-encoder re-ranking · Ollama LLM · 100% local & free")
 
 
+# ── auto-ingest demo data if DB is empty ─────────────────────────────────────
+# Streamlit Cloud has no persistent disk — ChromaDB resets on every redeploy.
+# This ensures the app always has something to query on first load.
+
+DEMO_SOURCES = [
+    "https://en.wikipedia.org/wiki/Retrieval-augmented_generation",
+    "https://en.wikipedia.org/wiki/Large_language_model",
+]
+
+def ensure_demo_data():
+    try:
+        db = get_vectorstore()
+        if db._collection.count() == 0:
+            with st.spinner("Loading demo documents on first run — takes ~30 seconds..."):
+                for url in DEMO_SOURCES:
+                    docs   = load_source(url)
+                    chunks = chunk_documents(docs)
+                    embed_and_store(chunks)
+            st.success(f"Demo data loaded — {len(DEMO_SOURCES)} articles ingested.")
+    except Exception as e:
+        st.warning(f"Could not auto-load demo data: {e}")
+
+ensure_demo_data()
+
+
 # ── session state ─────────────────────────────────────────────────────────────
 
 if "chain" not in st.session_state:

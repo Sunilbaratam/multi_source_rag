@@ -1,0 +1,27 @@
+{
+  "summary": {
+    "faithfulness": 1.0,
+    "answer_relevancy": 0.767,
+    "context_precision": 0.444
+  },
+  "per_question": [
+    {
+      "question": "What is retrieval augmented generation?",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.85,
+      "context_precision": 1.0
+    },
+    {
+      "question": "What are the main components of a RAG system?",
+      "faithfulness": 1.0,
+      "answer_relevancy": 0.925,
+      "context_precision": 0.333
+    },
+    {
+      "question": "What are the limitations of RAG systems?",
+      "faithfulness": null,
+      "answer_relevancy": 0.525,
+      "context_precision": 0.0
+    }
+  ]
+}

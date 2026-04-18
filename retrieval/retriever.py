@@ -53,13 +53,20 @@ class BM25Retriever:
             for text, meta in zip(result["documents"], result["metadatas"])
         ]
 
-        # tokenise: lowercase, split on whitespace
-        tokenised = [doc.page_content.lower().split() for doc in self.docs]
-        self.bm25 = BM25Okapi(tokenised)
-        print(f"[BM25] Index built over {len(self.docs)} chunks")
+        if not self.docs:
+            # empty DB — BM25Okapi crashes on empty corpus
+            # set bm25=None and handle it gracefully in search()
+            self.bm25 = None
+            print("[BM25] No documents in DB — BM25 disabled until data is ingested")
+        else:
+            tokenised = [doc.page_content.lower().split() for doc in self.docs]
+            self.bm25 = BM25Okapi(tokenised)
+            print(f"[BM25] Index built over {len(self.docs)} chunks")
 
     def search(self, query: str, k: int = 20) -> List[Document]:
-        """Return top-k chunks by BM25 score."""
+        """Return top-k chunks by BM25 score. Returns [] if DB is empty."""
+        if self.bm25 is None:
+            return []
         tokens = query.lower().split()
         scores = self.bm25.get_scores(tokens)
 

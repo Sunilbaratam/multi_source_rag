@@ -40,11 +40,11 @@ Sources (PDF / Web / Markdown)
 
 ### Generation quality (Week 4 — RAGAS)
 
-| Metric | Score |
-|---|---|
-| Faithfulness | — |
-| Answer relevancy | — |
-| Context precision | — |
+| Metric             | Score |
+|--------------------|-------|
+| Faithfulness       | 1.0 |
+| Answer relevancy   | 0.767 |
+| Context precision  | 0.444 |
 
 *(Run `python3 eval/ragas_eval.py` to populate these)*
 
